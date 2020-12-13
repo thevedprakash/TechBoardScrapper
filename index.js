@@ -99,7 +99,7 @@ async function scrapeCompanyDescription(listings,page) {
         listings[i].KeyPersonnel = KeyPersonnel;
         const AwardsWon = $("table > tbody > tr:nth-child(15) > td:nth-child(2)").text();
         listings[i].AwardsWon = AwardsWon;
-        // console.log(listings[i]);
+        console.log(listings[i]);
         const listingModel = new techboardListing(listings[i]);
         await listingModel.save();
         console.log("Sleeping for 1000 miliseconds.")
@@ -109,6 +109,15 @@ async function scrapeCompanyDescription(listings,page) {
 };
 
 
+async function clickSelect(page) {
+
+    await page.goto("https://techboard.com.au/companies/")
+
+    const html = await page.content();
+    const $ = cheerio.load(html);
+    $( "input[value='Search/Filter']" ).click();
+};
+
 async function sleep(miliseconds) {
     return new Promise(resolve => setTimeout(resolve,miliseconds));
 };
@@ -116,6 +125,11 @@ async function sleep(miliseconds) {
 
 async function main() {
     await connectToMongoDb();
+    await page.goto("https://techboard.com.au/companies/")
+
+    const html = await page.content();
+    const $ = cheerio.load(html);
+
     var i = 0;
     while (i < 3000) {
         const browser = await puppeteer.launch({headless: false});
@@ -126,8 +140,7 @@ async function main() {
             page
         );
         console.log(listings);
-        $( "input[value='Search/Filter']" ).click();
-        i++;
+        clickSelect(page)
         console.log("Page no. : ", i);
     };
 };
