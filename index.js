@@ -131,7 +131,7 @@ async function main() {
     const $ = cheerio.load(html);
 
     var i = 0;
-    while (i < 3000) {
+    while (i < 10) {
         const browser = await puppeteer.launch({headless: false});
         const page = await browser.newPage();
         const listings = await scrapeListings(page);
